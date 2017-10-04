@@ -4,6 +4,8 @@ Memory-efficient library which can apply [JojoDiff](http://jojodiff.sourceforge.
 
 This is an implementation from scratch, done by reverse engineering the diff file format, and inspecting the diff generation code. It's not a derived work from jptch (the patch application in JojoDiff). The reason for this is that JojoDiff is licensed under GPLv3, which does not allow linking in the library in non-GPL applications. JANPatch is licensed under Apache 2.0.
 
+For an example of using this library on an embedded system, see [binary-diff-mbedos5](https://github.com/janjongboom/binary-diff-mbedos5).
+
 ## Usage (CLI)
 
 On POSIX systems (macOS, Linux, Cygwin under Windows):
@@ -66,6 +68,8 @@ JANPATCH_STREAM *target = fopen("target.bin, "wb");
 
 janpatch(ctx, source, patch, target);
 ```
+
+For a demonstration of using this library on a non-POSIX system, see [binary-diff-mbedos5#xdot](https://github.com/janjongboom/binary-diff-mbedos5/tree/xdot).
 
 ## Generating patch files
 
