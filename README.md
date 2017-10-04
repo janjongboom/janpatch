@@ -32,7 +32,7 @@ On POSIX systems (macOS, Linux, Cygwin under Windows):
 
 ## Usage (library)
 
-JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `getc`, `putc`, `fread`, `fwrite` and `fseek`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
+JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `getc`, `putc`, `fread`, `fwrite`, `fseek` and `ftell`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
 
 The functions are defined in a context, for example on POSIX systems, you define JANPatch like this:
 
@@ -55,7 +55,8 @@ janpatch_ctx ctx = {
     &putc,
     &fread,
     &fwrite,
-    &fseek
+    &fseek,
+    &ftell
 };
 ```
 
