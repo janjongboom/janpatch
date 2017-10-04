@@ -11,7 +11,7 @@ On POSIX systems (macOS, Linux, Cygwin under Windows):
 1. Build the CLI, via:
 
     ```
-    $ gcc -DJANPATCH_STREAM=FILE -g -Wall janpatch-cli.c -o janpatch-cli
+    $ make
     ```
 
 1. Run `./janpatch-cli` with the old file, a JojoDiff patch file, and the destination:
