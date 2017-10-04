@@ -34,7 +34,8 @@ int main(int argc, char **argv) {
         &putc,
         &fread,
         &fwrite,
-        &fseek
+        &fseek,
+        &ftell
     };
 
     return janpatch(ctx, old, patch, target);

@@ -32,6 +32,7 @@ typedef struct {
     size_t (*fread)(void*, size_t, size_t, JANPATCH_STREAM*);
     size_t (*fwrite)(const void*, size_t, size_t, JANPATCH_STREAM*);
     int    (*fseek)(JANPATCH_STREAM*, long int, int);
+    long   (*ftell)(JANPATCH_STREAM*);
 } janpatch_ctx;
 
 enum {
@@ -56,7 +57,7 @@ static void process_mod(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM 
             // JANPATCH_DEBUG("NOT ESC\n");
             ctx.putc(m, target);
             if (up_old_stream) {
-                fseek(old, 1, SEEK_CUR); // and up old
+                ctx.fseek(old, 1, SEEK_CUR); // and up old
             }
             continue;
         }
@@ -70,13 +71,13 @@ static void process_mod(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM 
             // JANPATCH_DEBUG("ESC, NEXT CHAR ALSO ESC\n");
             ctx.putc(m, target);
             if (up_old_stream) {
-                fseek(old, 1, SEEK_CUR);
+                ctx.fseek(old, 1, SEEK_CUR);
             }
         }
         else if (m >= 0xA2 && m <= 0xA6) { // character after this is an operator? Then roll back two characters and exit
             // JANPATCH_DEBUG("ESC, THEN OPERATOR\n");
             JANPATCH_DEBUG("%lu bytes\n", cnt);
-            fseek(patch, -2, SEEK_CUR);
+            ctx.fseek(patch, -2, SEEK_CUR);
             break;
         }
         else { // else... write both the ESC and m
@@ -84,7 +85,7 @@ static void process_mod(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM 
             ctx.putc(JANPATCH_OPERATION_ESC, target);
             ctx.putc(m, target);
             if (up_old_stream) {
-                fseek(old, 2, SEEK_CUR); // up old by 2
+                ctx.fseek(old, 2, SEEK_CUR); // up old by 2
             }
         }
     }
@@ -127,7 +128,7 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM *patch, JAN
                     int length = find_length(ctx, patch);
                     if (length == -1) {
                         JANPATCH_ERROR("EQL length invalid\n");
-                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ftell(old), ftell(patch), ftell(target));
+                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ctx.ftell(old), ctx.ftell(patch), ctx.ftell(target));
                         return 1;
                     }
 
@@ -179,13 +180,13 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM *patch, JAN
                     int length = find_length(ctx, patch);
                     if (length == -1) {
                         JANPATCH_ERROR("BKT length invalid\n");
-                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ftell(old), ftell(patch), ftell(target));
+                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ctx.ftell(old), ctx.ftell(patch), ctx.ftell(target));
                         return 1;
                     }
 
                     JANPATCH_DEBUG("BKT: %d bytes\n", -length);
 
-                    fseek(old, ftell(old) - length, SEEK_SET);
+                    ctx.fseek(old, ctx.ftell(old) - length, SEEK_SET);
 
                     break;
                 }
@@ -194,18 +195,18 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM *patch, JAN
                     int length = find_length(ctx, patch);
                     if (length == -1) {
                         JANPATCH_ERROR("DEL length invalid\n");
-                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ftell(old), ftell(patch), ftell(target));
+                        JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ctx.ftell(old), ctx.ftell(patch), ctx.ftell(target));
                         return 1;
                     }
 
                     JANPATCH_DEBUG("DEL: %d bytes\n", length);
 
-                    fseek(old, length, SEEK_CUR);
+                    ctx.fseek(old, length, SEEK_CUR);
                     break;
                 }
                 default: {
                     JANPATCH_ERROR("Unsupported operator %02x\n", c);
-                    JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ftell(old), ftell(patch), ftell(target));
+                    JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ctx.ftell(old), ctx.ftell(patch), ctx.ftell(target));
                     return 1;
                 }
             }
@@ -213,7 +214,7 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *old, JANPATCH_STREAM *patch, JAN
         else {
             JANPATCH_ERROR("Expected ESC but got %02x\n", c);
 
-            JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ftell(old), ftell(patch), ftell(target));
+            JANPATCH_DEBUG("Positions are, old=%ld patch=%ld new=%ld\n", ctx.ftell(old), ctx.ftell(patch), ctx.ftell(target));
 
             return 1;
         }
