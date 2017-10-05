@@ -63,9 +63,9 @@ janpatch_ctx ctx = {
 Then create three objects of type `JANPATCH_STREAM` and call `janpatch` with the context:
 
 ```cpp
-JANPATCH_STREAM *source = fopen("source.bin, "rb");
-JANPATCH_STREAM *patch  = fopen("patch, "rb");
-JANPATCH_STREAM *target = fopen("target.bin, "wb");
+JANPATCH_STREAM *source = fopen("source.bin", "rb");
+JANPATCH_STREAM *patch  = fopen("patch", "rb");
+JANPATCH_STREAM *target = fopen("target.bin", "wb");
 
 janpatch(ctx, source, patch, target);
 ```
