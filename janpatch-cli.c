@@ -27,11 +27,10 @@ int main(int argc, char **argv) {
 
     // janpatch_ctx contains buffers, and references to the file system functions
     janpatch_ctx ctx = {
-        (char*)malloc(1024),
-        1024,
+        { (unsigned char*)malloc(1024), 1024 }, // source buffer
+        { (unsigned char*)malloc(1024), 1024 }, // patch buffer
+        { (unsigned char*)malloc(1024), 1024 }, // target buffer
 
-        &getc,
-        &putc,
         &fread,
         &fwrite,
         &fseek,
