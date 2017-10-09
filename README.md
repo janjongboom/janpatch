@@ -71,6 +71,18 @@ janpatch(ctx, source, patch, target);
 
 For a demonstration of using this library on a non-POSIX system, see [binary-diff-mbedos5#xdot](https://github.com/janjongboom/binary-diff-mbedos5/tree/xdot).
 
+### Reporting progress
+
+Exact progress indication is hard, as the size of the file after patching is not known, but you can get rudimentary progress (based on the pages written to the target stream) by setting the `progress` property on the context:
+
+```
+void progress(uint8_t percentage) {
+    printf("Patch progress: %d%%\n", percentage);
+}
+
+ctx.progress = &progress;
+```
+
 ## Generating patch files
 
 To generate patch files you'll need to build [JojoDiff](http://jojodiff.sourceforge.net).
