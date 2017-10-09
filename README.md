@@ -32,7 +32,7 @@ On POSIX systems (macOS, Linux, Cygwin under Windows):
 
 ## Usage (library)
 
-JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `getc`, `putc`, `fread`, `fwrite`, `fseek` and `ftell`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
+JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `fread`, `fwrite`, `fseek` and `ftell`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
 
 The functions are defined in a context, for example on POSIX systems, you define JANPatch like this:
 
@@ -41,18 +41,17 @@ The functions are defined in a context, for example on POSIX systems, you define
 
 #include "janpatch.h"
 
-// fread/fwrite buffer, minimum size is 1 byte
+// fread/fwrite buffers for every file, minimum size is 1 byte
+// when you run on an embedded system with block size flash, set it to the size of a block for best performance
 char buffer[1024];
 
 janpatch_ctx ctx = {
-    // provide buffers
-    buffer,
-    sizeof(buffer),
+    { (unsigned char*)malloc(1024), 1024 },
+    { (unsigned char*)malloc(1024), 1024 },
+    { (unsigned char*)malloc(1024), 1024 },
 
     // define functions which can perform basic IO
     // on POSIX, use:
-    &getc,
-    &putc,
     &fread,
     &fwrite,
     &fseek,
@@ -89,10 +88,6 @@ To generate patch files you'll need to build [JojoDiff](http://jojodiff.sourcefo
     ```
     $ ./jdiff old-file.bin new-file.bin old-to-new-file.patch
     ```
-
-## Todo
-
-* `MOD` / `INS` do not use the buffer.
 
 ## License
 
