@@ -200,7 +200,7 @@ static int find_length(janpatch_ctx *ctx, janpatch_buffer *buffer) {
         return (jp_getc(ctx, buffer) << 8) + jp_getc(ctx, buffer);
     }
     else if (l == 254) {
-        return (jp_getc(ctx, buffer) << 16) + (jp_getc(ctx, buffer) << 8) + (jp_getc(ctx, buffer));
+        return (jp_getc(ctx, buffer) << 24) + (jp_getc(ctx, buffer) << 16) + (jp_getc(ctx, buffer) << 8) + (jp_getc(ctx, buffer));
     }
     else {
         JANPATCH_ERROR("EQL followed by unexpected byte %02x %02x\n", JANPATCH_OPERATION_EQL, l);
