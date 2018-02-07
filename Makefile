@@ -10,7 +10,7 @@ all: build
 .PHONY: build clean
 
 build:
-	$(CC) $(MACROS) $(CFLAGS) janpatch-cli.c -o $(NAME)
+	$(CC) $(MACROS) $(CFLAGS) janpatch-cli.c wrapper.c -o $(NAME)
 
 clean:
 	rm $(NAME)
