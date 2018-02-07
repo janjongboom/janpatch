@@ -1,3 +1,4 @@
 janpatch-cli
 janpatch-cli.dSYM/
 blinky-k64f-patched.bin
+integration-tests/target/

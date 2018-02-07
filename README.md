@@ -101,6 +101,21 @@ To generate patch files you'll need to build [JojoDiff](http://jojodiff.sourcefo
     $ ./jdiff old-file.bin new-file.bin old-to-new-file.patch
     ```
 
+## Running tests
+
+To test janpatch against a wide variety of outputs you can run the integration tests. The script will generate all possible diffs between files in the `integration-tests/source` directory, then use janpatch to patch them.
+
+To run:
+
+1. Install a recent version of [Node.js](https://nodejs.org).
+1. Build JojoDiff (see above).
+1. Build janpatch-cli.
+1. Run:
+
+    ```
+    $ node integration-tests/run-tests.js --jdiff-path "/path/to/jdiff"
+    ```
+
 ## License
 
 Apache License version 2. See [LICENSE](LICENSE).
