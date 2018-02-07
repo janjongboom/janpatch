@@ -32,7 +32,7 @@ On POSIX systems (macOS, Linux, Cygwin under Windows):
 
 ## Usage (library)
 
-JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `fread`, `fwrite`, `fseek` and `ftell`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
+JANPatch is implemented in a single header file, which you can copy into your project. For portability to non-POSIX platforms you need to provide the library with function pointers to basic IO operations. These are `fread`, `fwrite`, `fseek` and (optionally) `ftell`. The file pointer for these functions is of type `JANPATCH_STREAM`, which you can set when building.
 
 The functions are defined in a context, for example on POSIX systems, you define JANPatch like this:
 
@@ -55,7 +55,7 @@ janpatch_ctx ctx = {
     &fread,
     &fwrite,
     &fseek,
-    &ftell
+    &ftell          // NOTE: passing ftell is optional, and only required when you need progress reports
 };
 ```
 
@@ -82,6 +82,8 @@ void progress(uint8_t percentage) {
 
 ctx.progress = &progress;
 ```
+
+Note that you need to have declared `ctx.ftell` for this to work.
 
 ## Generating patch files
 
