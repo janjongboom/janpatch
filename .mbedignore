@@ -1,1 +1,3 @@
 janpatch-cli.c
+fuzzing/
+demo/
