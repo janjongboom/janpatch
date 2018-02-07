@@ -41,11 +41,9 @@ The functions are defined in a context, for example on POSIX systems, you define
 
 #include "janpatch.h"
 
-// fread/fwrite buffers for every file, minimum size is 1 byte
-// when you run on an embedded system with block size flash, set it to the size of a block for best performance
-char buffer[1024];
-
 janpatch_ctx ctx = {
+    // fread/fwrite buffers for every file, minimum size is 1 byte
+    // when you run on an embedded system with block size flash, set it to the size of a block for best performance
     { (unsigned char*)malloc(1024), 1024 },
     { (unsigned char*)malloc(1024), 1024 },
     { (unsigned char*)malloc(1024), 1024 },
@@ -66,7 +64,7 @@ JANPATCH_STREAM *source = fopen("source.bin", "rb");
 JANPATCH_STREAM *patch  = fopen("patch", "rb");
 JANPATCH_STREAM *target = fopen("target.bin", "wb");
 
-janpatch(ctx, source, patch, target);
+janpatch(ctx, source, patch, target); // returns '0' when succeeded
 ```
 
 For a demonstration of using this library on a non-POSIX system, see [binary-diff-mbedos5#xdot](https://github.com/janjongboom/binary-diff-mbedos5/tree/xdot).
