@@ -141,6 +141,11 @@ static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buf
     while (1) {
         cnt++;
         int m = jp_getc(ctx, patch);
+        if (m == -1) {
+            // End of file stream... rewind 1 character and return, this will yield back to janpatch main function, which will exit
+            ctx->fseek(source->stream, -1, SEEK_CUR);
+            return;
+        }
         // JANPATCH_DEBUG("%02x ", m);
         // so... if it's *NOT* an ESC character, just write it to the target stream
         if (m != JANPATCH_OPERATION_ESC) {
@@ -155,6 +160,12 @@ static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buf
         // read the next character to see what we should do
         m = jp_getc(ctx, patch);
         // JANPATCH_DEBUG("%02x ", m);
+
+        if (m == -1) {
+            // End of file stream... rewind 1 character and return, this will yield back to janpatch main function, which will exit
+            ctx->fseek(source->stream, -1, SEEK_CUR);
+            return;
+        }
 
         // if the character after this is *not* an operator (except ESC)
         if (m == JANPATCH_OPERATION_ESC) {
@@ -206,6 +217,8 @@ static int find_length(janpatch_ctx *ctx, janpatch_buffer *buffer) {
         JANPATCH_ERROR("EQL followed by unexpected byte %02x %02x\n", JANPATCH_OPERATION_EQL, l);
         return -1;
     }
+
+    // it's fine if we get over the end of the stream here, will be caught by the next function
 }
 
 int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, JANPATCH_STREAM *target) {
@@ -301,6 +314,11 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                     JANPATCH_DEBUG("DEL: %d bytes\n", length);
 
                     ctx.fseek(source, length, SEEK_CUR);
+                    break;
+                }
+                case -1: {
+                    // End of file stream... rewind 1 character and break, this will yield back to main loop
+                    ctx.fseek(source, -1, SEEK_CUR);
                     break;
                 }
                 default: {
