@@ -3,7 +3,7 @@
 
 int main(int argc, char **argv) {
     if (argc != 3 && argc != 4) {
-        printf("Usage: janpatch-cli [old-file] [patch-file] ([new-file])");
+        printf("Usage: janpatch-cli [old-file] [patch-file] ([new-file])\n");
         return 1;
     }
 
