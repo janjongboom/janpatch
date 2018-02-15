@@ -1,3 +1,3 @@
-janpatch-cli.c
-fuzzing/
+cli/
+integration-tests/
 demo/

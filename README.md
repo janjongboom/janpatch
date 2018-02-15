@@ -118,6 +118,16 @@ To run:
     $ node integration-tests/run-tests.js --jdiff-path "/path/to/jdiff"
     ```
 
+## Mbed OS 5 - Building without loading UART driver
+
+Error messages are printed over `printf`, which will automatically load the UART drivers on Mbed OS 5. You can mitigate this by using `debug()`, which is stripped out when building for a release profile.
+
+You can do this by declaring the `JANPATCH_ERROR` macro as such:
+
+```
+#define JANPATCH_ERROR(...)  debug(__VA_ARGS__)
+```
+
 ## License
 
 Apache License version 2. See [LICENSE](LICENSE).
