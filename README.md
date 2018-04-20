@@ -85,20 +85,19 @@ Note that you need to have declared `ctx.ftell` for this to work.
 
 ## Generating patch files
 
-To generate patch files you'll need to build [JojoDiff](http://jojodiff.sourceforge.net).
+To generate patch files you'll need to build [JojoDiff](http://jojodiff.sourceforge.net) or [JDiff.js](https://github.com/janjongboom/jdiff-js).
 
-1. Download and extract the source code.
-1. Open a terminal, and build via:
+1. Install a recent version of [Node.js](https://nodejs.org).
+1. Install JDiff.js:
 
     ```
-    $ cd src
-    $ make
+    $ npm install jdiff-js -g
     ```
 
 1. Generate a patch file via:
 
     ```
-    $ ./jdiff old-file.bin new-file.bin old-to-new-file.patch
+    $ jdiff old-file.bin new-file.bin old-to-new-file.patch
     ```
 
 ## Running tests
