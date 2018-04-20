@@ -15,7 +15,9 @@ if (!fs.existsSync(Path.join(__dirname, 'target'))) {
 
 const target_files = [];
 for (let s = 0; s < files.length; s++) {
-    for (let t = s + 1; t < files.length; t++) {
+    for (let t = 0; t < files.length; t++) {
+        if (t === s) continue;
+
         target_files.push([
             Path.join(__dirname, 'source', files[s]),
             Path.join(__dirname, 'source', files[t]),

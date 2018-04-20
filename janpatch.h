@@ -171,6 +171,19 @@ static void jp_final_flush(janpatch_ctx* ctx, janpatch_buffer* buffer) {
     long position = buffer->position;
     int position_in_page = position % buffer->size;
 
+    uint32_t page = ((unsigned long)position) / buffer->size;
+
+    // if the page has changed we also need to flush the previous page
+    // this can happen when the last operation (e.g. jp_putc) has just crossed page boundary
+    if (page != buffer->current_page) {
+        // flush the page buffer...
+        if (buffer->current_page != -1) {
+            jp_fseek(buffer, buffer->current_page * buffer->size, SEEK_SET);
+            jp_fwrite(ctx, buffer->buffer, 1, buffer->current_page_size, buffer);
+        }
+    }
+
+    // flush the new page buffer
     jp_fseek(buffer, buffer->current_page * buffer->size, SEEK_SET);
     jp_fwrite(ctx, buffer->buffer, 1, position_in_page, buffer);
 
