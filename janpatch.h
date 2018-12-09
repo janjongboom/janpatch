@@ -120,7 +120,7 @@ static int jp_getc(janpatch_ctx* ctx, janpatch_buffer* buffer) {
 
     int position_in_page = position % buffer->size;
 
-    if (position_in_page >= buffer->current_page_size) {
+    if ((size_t)position_in_page >= buffer->current_page_size) {
         return EOF;
     }
 
@@ -143,7 +143,7 @@ static int jp_putc(int c, janpatch_ctx* ctx, janpatch_buffer* buffer) {
 
     if (page != buffer->current_page) {
         // flush the page buffer...
-        if (buffer->current_page != -1) {
+        if (buffer->current_page != 0xFFFFFFFF) {
             jp_fseek(buffer, buffer->current_page * buffer->size, SEEK_SET);
             jp_fwrite(ctx, buffer->buffer, 1, buffer->current_page_size, buffer);
 
@@ -177,7 +177,7 @@ static void jp_final_flush(janpatch_ctx* ctx, janpatch_buffer* buffer) {
     // this can happen when the last operation (e.g. jp_putc) has just crossed page boundary
     if (page != buffer->current_page) {
         // flush the page buffer...
-        if (buffer->current_page != -1) {
+        if (buffer->current_page != 0xFFFFFFFF) {
             jp_fseek(buffer, buffer->current_page * buffer->size, SEEK_SET);
             jp_fwrite(ctx, buffer->buffer, 1, buffer->current_page_size, buffer);
         }
@@ -324,7 +324,7 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
 
                     JANPATCH_DEBUG("EQL: %d bytes\n", length);
 
-                    for (size_t ix = 0; ix < length; ix++) {
+                    for (int ix = 0; ix < length; ix++) {
                         int r = jp_getc(&ctx, &ctx.source_buffer);
                         if (r < -1) {
                             JANPATCH_ERROR("fread returned %d, but expected character\n", r);
