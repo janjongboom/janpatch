@@ -184,7 +184,7 @@ static void jp_final_flush(janpatch_ctx* ctx, janpatch_buffer* buffer) {
     }
 
     // flush the new page buffer
-    jp_fseek(buffer, buffer->current_page * buffer->size, SEEK_SET);
+    jp_fseek(buffer, page * buffer->size, SEEK_SET);
     jp_fwrite(ctx, buffer->buffer, 1, position_in_page, buffer);
 
     if (ctx->progress) {
