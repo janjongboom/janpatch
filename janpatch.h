@@ -148,7 +148,7 @@ static int jp_putc(int c, janpatch_ctx* ctx, janpatch_buffer* buffer) {
             jp_fwrite(ctx, buffer->buffer, 1, buffer->current_page_size, buffer);
 
             if (ctx->progress) {
-                ctx->progress(position * 100 / ctx->max_file_size);
+                ctx->progress((uint8_t)(position * 100 / ctx->max_file_size));
             }
         }
 
