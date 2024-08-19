@@ -14,7 +14,8 @@
 #endif
 
 // detect POSIX, and use FILE* in that case
-#if !defined(JANPATCH_STREAM) && (defined (__unix__) || (defined (__APPLE__) && defined (__MACH__)))
+#if !defined(JANPATCH_STREAM) && (defined (__unix__) || (defined (__APPLE__) && defined (__MACH__)) || \
+    (defined(_WIN32) || defined(WIN32)))
 #include <stdio.h>
 #define JANPATCH_STREAM     FILE
 #elif !defined(JANPATCH_STREAM)
