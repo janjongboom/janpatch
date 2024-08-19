@@ -61,7 +61,7 @@ enum {
 /**
  * Read a buffer off the stream
  */
-static size_t jp_fread(janpatch_ctx *ctx, void *ptr, size_t size, size_t count, janpatch_buffer *buffer) {
+static size_t jp_fread(janpatch_ctx* ctx, void* ptr, size_t size, size_t count, janpatch_buffer* buffer) {
     ctx->fseek(buffer->stream, buffer->position, SEEK_SET);
 
     size_t bytes_read = ctx->fread(ptr, size, count, buffer->stream);
@@ -74,7 +74,7 @@ static size_t jp_fread(janpatch_ctx *ctx, void *ptr, size_t size, size_t count, 
 /**
  * Write a buffer to the stream
  */
-static size_t jp_fwrite(janpatch_ctx *ctx, const void *ptr, size_t size, size_t count, janpatch_buffer *buffer) {
+static size_t jp_fwrite(janpatch_ctx* ctx, const void* ptr, size_t size, size_t count, janpatch_buffer* buffer) {
     ctx->fseek(buffer->stream, buffer->position, SEEK_SET);
 
     size_t bytes_written = ctx->fwrite(ptr, size, count, buffer->stream);
@@ -87,7 +87,7 @@ static size_t jp_fwrite(janpatch_ctx *ctx, const void *ptr, size_t size, size_t 
 /**
  * Set position of the stream
  */
-static int jp_fseek(janpatch_buffer *buffer, long int offset, int origin) {
+static int jp_fseek(janpatch_buffer* buffer, long int offset, int origin) {
     if (origin == SEEK_SET) {
         buffer->position = offset;
     }
@@ -100,7 +100,6 @@ static int jp_fseek(janpatch_buffer *buffer, long int offset, int origin) {
     }
     return 0;
 }
-
 
 /**
  * Get a character from the stream
@@ -192,7 +191,8 @@ static void jp_final_flush(janpatch_ctx* ctx, janpatch_buffer* buffer) {
     }
 }
 
-static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buffer *patch, janpatch_buffer *target, bool up_source_stream) {
+static void process_mod(janpatch_ctx* ctx, janpatch_buffer* source, janpatch_buffer* patch,
+    janpatch_buffer* target, bool up_source_stream) {
     // it can be that ESC character is actually in the data, but then it's prefixed with another ESC
     // so... we're looking for a lone ESC character
     size_t cnt = 0;
@@ -200,7 +200,8 @@ static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buf
         cnt++;
         int m = jp_getc(ctx, patch);
         if (m == -1) {
-            // End of file stream... rewind 1 character and return, this will yield back to janpatch main function, which will exit
+            // End of file stream... rewind 1 character and return, this will yield back to janpatch
+            // main function, which will exit
             jp_fseek(source, -1, SEEK_CUR);
             return;
         }
@@ -220,7 +221,8 @@ static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buf
         // JANPATCH_DEBUG("%02x ", m);
 
         if (m == -1) {
-            // End of file stream... rewind 1 character and return, this will yield back to janpatch main function, which will exit
+            // End of file stream... rewind 1 character and return, this will yield back to janpatch
+            // main function, which will exit
             jp_fseek(source, -1, SEEK_CUR);
             return;
         }
@@ -250,7 +252,7 @@ static void process_mod(janpatch_ctx *ctx, janpatch_buffer *source, janpatch_buf
     }
 }
 
-static int find_length(janpatch_ctx *ctx, janpatch_buffer *buffer) {
+static int find_length(janpatch_ctx* ctx, janpatch_buffer* buffer) {
     /* So... the EQL/BKT length thing works like this:
     *
     * If byte[0] is between 1..251 => use byte[0] + 1
@@ -279,7 +281,7 @@ static int find_length(janpatch_ctx *ctx, janpatch_buffer *buffer) {
     // it's fine if we get over the end of the stream here, will be caught by the next function
 }
 
-int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, JANPATCH_STREAM *target) {
+int janpatch(janpatch_ctx ctx, JANPATCH_STREAM* source, JANPATCH_STREAM* patch, JANPATCH_STREAM* target) {
 
     ctx.source_buffer.current_page = 0xffffffff;
     ctx.patch_buffer.current_page = 0xffffffff;
@@ -318,7 +320,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                     int length = find_length(&ctx, &ctx.patch_buffer);
                     if (length == -1) {
                         JANPATCH_ERROR("EQL length invalid\n");
-                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n", ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
+                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n",
+                            ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
                         return 1;
                     }
 
@@ -328,7 +331,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                         int r = jp_getc(&ctx, &ctx.source_buffer);
                         if (r < -1) {
                             JANPATCH_ERROR("fread returned %d, but expected character\n", r);
-                            JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n", ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
+                            JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n",
+                                ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
                             return 1;
                         }
 
@@ -348,8 +352,9 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                 }
                 case JANPATCH_OPERATION_INS: {
                     JANPATCH_DEBUG("INS: ");
-                    // INS inserts the sequence in the new JANPATCH_STREAM, but does not up the position of the source JANPATCH_STREAM
-                    // so just write everything (until the next ESC sequence) to the target JANPATCH_STREAM
+                    // INS inserts the sequence in the new JANPATCH_STREAM, but does not up the position
+                    // of the source JANPATCH_STREAM so just write everything (until the next ESC sequence)
+                    // to the target JANPATCH_STREAM
 
                     process_mod(&ctx, &ctx.source_buffer, &ctx.patch_buffer, &ctx.target_buffer, false);
                     break;
@@ -359,7 +364,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                     int length = find_length(&ctx, &ctx.patch_buffer);
                     if (length == -1) {
                         JANPATCH_ERROR("BKT length invalid\n");
-                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n", ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
+                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n",
+                            ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
                         return 1;
                     }
 
@@ -374,7 +380,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                     int length = find_length(&ctx, &ctx.patch_buffer);
                     if (length == -1) {
                         JANPATCH_ERROR("DEL length invalid\n");
-                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n", ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
+                        JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n",
+                            ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
                         return 1;
                     }
 
@@ -390,7 +397,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
                 }
                 default: {
                     JANPATCH_ERROR("Unsupported operator %02x\n", c);
-                    JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n", ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
+                    JANPATCH_ERROR("Positions are, source=%ld patch=%ld new=%ld\n",
+                        ctx.source_buffer.position, ctx.patch_buffer.position, ctx.target_buffer.position);
                     return 1;
                 }
             }
