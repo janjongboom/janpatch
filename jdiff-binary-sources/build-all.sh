@@ -59,6 +59,9 @@ echo ""
 echo "Building jdiff081..."
 cd $SCRIPTPATH/jdiff081/src
 $SEDCMD "s/#define ulong unsigned long int//g" JDefs.h      # patch out unused ulong define
+if [ -f "JDefs.h''" ]; then
+    rm "JDefs.h''"
+fi
 make -j`nproc`
 echo "Building jdiff081 OK"
 echo ""
@@ -66,6 +69,9 @@ echo ""
 echo "Building jdiff085..."
 cd $SCRIPTPATH/jdiff085/src
 $SEDCMD "s/-m64//g" Makefile      # patch out -m64
+if [ -f "Makefile''" ]; then
+    rm "Makefile''"
+fi
 make -j`nproc`
 echo "Building jdiff085 OK"
 echo ""

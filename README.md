@@ -116,9 +116,9 @@ To run:
 3. Run:
 
     ```
-    $ node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff07/src/jdiff
-    $ node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff081/src/jdiff
-    $ node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff085/src/jdiff
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff07/src/jdiff
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff081/src/jdiff
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff085/src/jdiff
     ```
 
 ## Run through Valgrind
