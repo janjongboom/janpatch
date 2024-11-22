@@ -107,13 +107,37 @@ To test janpatch against a wide variety of outputs you can run the integration t
 To run:
 
 1. Install a recent version of [Node.js](https://nodejs.org).
-1. Build JojoDiff (see above).
-1. Build janpatch-cli.
-1. Run:
+2. Build JojoDiff 0.7, 0.8.1 and 0.8.5 via:
 
     ```
-    $ node integration-tests/run-tests.js --jdiff-path "/path/to/jdiff"
+    sh jdiff-binary-sources/build-all.sh
     ```
+
+3. Run:
+
+    ```
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff07/src/jdiff
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff081/src/jdiff
+    node integration-tests/run-tests.js --jdiff-path jdiff-binary-sources/jdiff085/src/jdiff
+    ```
+
+## Run through Valgrind
+
+1. Build the test container:
+
+    ```
+    docker build -t jdiff-valgrind -f Dockerfile.valgrind .
+    ```
+
+2. Run the CLI through Valgrind:
+
+    ```
+    docker run --rm -it -v $PWD/cli/:/app/cli/ -v $PWD/integration-tests/:/app/integration-tests/ jdiff-valgrind bash -c "\
+        valgrind --leak-check=full ./janpatch-cli integration-tests/source/blinky-k64f.bin integration-tests/target/blinky-k64f_blinky-f411re.diff bleep.patched
+    "
+    ```
+
+    This should print "All heap blocks were freed -- no leaks are possible".
 
 ## Mbed OS 5 - Building without loading UART driver
 

@@ -37,5 +37,15 @@ int main(int argc, char **argv) {
         &ftell
     };
 
-    return janpatch(ctx, old, patch, target);
+    int r = janpatch(ctx, old, patch, target);
+
+    fclose(old);
+    fclose(patch);
+    fclose(target);
+
+    free(ctx.source_buffer.buffer);
+    free(ctx.patch_buffer.buffer);
+    free(ctx.target_buffer.buffer);
+
+    return r;
 }
