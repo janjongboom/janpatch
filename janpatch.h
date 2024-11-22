@@ -314,7 +314,8 @@ int janpatch(janpatch_ctx ctx, JANPATCH_STREAM *source, JANPATCH_STREAM *patch, 
     while ((c = jp_getc(&ctx, &ctx.patch_buffer)) != EOF) {
         if (c == JANPATCH_OPERATION_ESC) {
             c = jp_getc(&ctx, &ctx.patch_buffer);
-        } else {
+        }
+        else {
             // Starting from JoJoDiff v0.8.5, the default operation is MOD.
             // The currently read character from the patch stream is not an ESC,
             // therefore rewind 1 character in the patch stream and set the
